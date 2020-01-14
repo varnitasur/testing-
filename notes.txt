@@ -1,0 +1,117 @@
+{
+ 	"accountName":"marriot",
+ 	"revenue":12000,
+ 	"projects" :[
+ 		{
+ 			"projectName":"aspire",
+ 			"cost":3600
+ 		}
+ 		]
+ }
+
+https://github.com/Arnablens/IG/blob/master/IndustrialGroup/src/main/java/com/mindtree/IndustrialGroup/service/AccountServiceImpl/AccountServiceImpl.java
+
+https://blogsfit.wordpress.com/artifactory-installation-on-ubuntu/
+
+https://github.com/sri1056249/ManyToMany/blob/master/KalingaCollege/src/main/java/com/mindtree/college/entity/College.java
+
+
+
+FROM tomcat:8-jre8
+
+RUN rm -rf /usr/local/tomcat/webapps/*
+
+COPY target/gameoflife.war /usr/local/tomcat/webapps/ROOT.war
+
+EXPOSE 8080
+CMD ["catalina.sh", "run"]
+
+mysql -u root -p
+
+
+AKIAVD6PRMNJFTKWU46D
+
+Mr7x3MjV65HnXkh4NjHlYZ7DQDZKTJdUcqDQ0eu+
+
+provider "aws"{
+access_key ="AKIAVD6PRMNJFTKWU46D"
+secret_key ="Mr7x3MjV65HnXkh4NjHlYZ7DQDZKTJdUcqDQ0eu"
+region ="us-east-2"
+}
+resources "aws_instance" "example-aws" {
+ami          =""
+instance_type ="t2.micro"
+}
+
+
+AKIAVD6PRMNJBXUDM76C
+zvtaOfWbzmsFXkOk9iLyDrehGrDxJiZGyjyTMxgf
+
+"ami-0ce933e2ae91880d3"
+
+stage('terraform test') 
+    {
+        steps
+        {
+            script 
+            {
+                Pipeline_Message=env.STAGE_NAME
+                echo "terraform test"
+            }
+            dir("/home/DevOpsTeam3/teraform/sunetra")
+            {
+                sh 'terraform init'
+                sh 'terraform apply'
+            }
+        }
+    }
+
+
+
+
+
+provider "aws"{
+access_key ="AKIAVD6PRMNJO5HDS6KY"
+secret_key ="Ckrgn1wxihjbO419p30iF7+ewpp+7WVVT+jjaUrR"
+region ="us-east-2"
+}
+resources "aws_instance" "example" {
+ami          ="ami-0d03add87774b12c5"
+instance_type ="t2.micro"
+
+
+
+
+
+
+
+aws" {
+        access_key="AKIATMZQZA2IR4WJP3"
+        secret_key="OBBmvJzqUlrQWzwJYGXswbDJPPz862fAl0kKjM/"
+        region ="ap-south-1"
+}
+resource "aws_instance" "example" {
+        ami ="ami-0ce933e2ae91880d3"
+        instance_type=}
+
+
+
+
+
+
+
+provider "aws" {
+        access_key= "AKIAVD6PRMNJMRGTL5PY"
+        secret_key="qcWJ8ojRGvou9MXZZkrv23CLLG1HrvZAytBSCwMQ"
+        region="eu-west-3"
+}
+resource "aws_instance" "example"{
+        ami="ami-0d03add87774b12c5"
+        instance_type="t2.micro"
+}
+
+
+
+
+
+

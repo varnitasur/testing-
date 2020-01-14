@@ -1,0 +1,26 @@
+For jenkins
+
+cd /var
+cd /etc/default
+sudo vi jenkins
+
+For jFrog
+
+cd /var
+cd /opt
+cd jfrog
+cd artifactory
+cd tomcat
+sudo vi server.xml
+
+For Sonar
+
+cd /var
+cd /opt
+cd sonarqube
+sonarpropertise
+
+
+
+
+

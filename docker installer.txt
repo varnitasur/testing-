@@ -1,0 +1,8 @@
+sudo apt-get update
+ sudo apt-get upgrade
+ sudo apt-get install docker
+ docker images
+ sudo apt install docker.io
+ docker images
+ sudo du
+sudo systemctl restart docker

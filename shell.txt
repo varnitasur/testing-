@@ -1,0 +1,30 @@
+
+timestamp=`date +%F_%T`
+folder=folder_$timestamp
+
+mkdir $folder
+
+
+count=1
+while [ $count -le 10 ]
+do
+ echo $count
+count=`expr $count + 1`
+done
+
+
+echo "enter a file name:\c"
+read fname
+echo $fname
+
+size of file 
+for i in *
+do
+        wc=$(wc -c <"$i")
+        case $wc in 100)
+        ;;
+        ???* )
+        continue ;;
+esac
+echo "$wc $i"
+done

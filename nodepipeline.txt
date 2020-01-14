@@ -1,0 +1,47 @@
+node {
+    
+stage('Git CheckOut') {    
+    git url: 'https://github.com/varnitasur/Game-git.git'
+}
+
+ 
+
+        stage('Clean Old Packages') {
+            dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication"){
+        sh label: 'Clean', script: 'mvn clean'
+    }
+        }
+        stage('Maven Compile') {
+            dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication"){
+        sh label: 'Compile', script: 'mvn compile'
+    }
+        }
+        /*stage('Sonar Analysis'){
+        withSonarQubeEnv('sonarqube'){
+         sh 'mvn sonar:sonar'
+            }
+        }*/
+    stage('Maven Package') {
+        dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication"){
+    sh label: 'Testing', script: 'mvn clean install'
+    }
+    }
+     stage('docker deploy')
+     {
+        dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+        {
+            sh"docker build -t game . "
+            sh "docker container run -d -it -p 8082:8080 --name gameApp -v /var/lib/tomcat8/conf/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml game"
+        }
+    }
+    stage('docker push')
+     {
+        dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+        {
+            
+            sh"docker tag game varnitasur/game"
+            sh"docker push varnitasur/game"
+        }
+        
+    }
+}

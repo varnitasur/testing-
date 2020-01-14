@@ -1,0 +1,23 @@
+﻿---Tomcat8 installation in ubuntu---
+
+make sure port 8080 is free or else you can change it in step 5.. 
+
+1. sudo apt-get update
+
+2. sudo apt-get install tomcat8 tomcat8-docs tomcat8-admin tomcat8-examples
+
+3. check this-->  http://your_ip_address:8080 (to check if your tomcat page is running)
+
+4. Tomcat Web Management Interface
+	gui
+	add the following lines
+	
+	<role rolename="manager-gui"/>
+	<role rolename="admin-gui"/>
+	<user name="admin" password="admin" roles="manager-gui,admin-gui"/>
+
+5. sudo vi /etc/tomcat8/server.xml
+	--> Now replace the part that says Connector port=”8080″ with any available port
+	-->sudo /etc/init.d/tomcat8 restart
+	
+refer- http://www.ubuntugeek.com/install-tomcat-8-on-ubuntu-16-04-server.html	

@@ -1,0 +1,15 @@
+upstream backend
+{
+server localhost:8086;
+server localhost:8087;
+}
+
+ 
+
+
+server{
+listen 8085;
+location / {
+proxy_pass http://backend;
+          }
+}

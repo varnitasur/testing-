@@ -1,0 +1,54 @@
+node
+{
+    
+    stage('Git CheckOut')
+    {    
+         git url: 'https://github.com/pyamgar/gol.git'
+    }
+
+def project_path = "/var/lib/jenkins/workspace/gol_pipeline/gameoflife-web"
+dir(project_path) 
+{
+    stage('Clean Old Packages')
+    {
+    sh label: 'Clean', script: 'mvn clean'
+    }
+    stage('Maven Compile')
+    {
+    sh label: 'Comile', script: 'mvn compile'
+    }
+    stage('Sonar Analysis')
+    {
+        withSonarQubeEnv('sonarqube')
+        {
+                    sh 'mvn sonar:sonar'
+         }
+    }
+    stage('Maven Package')
+    {
+    sh label: 'Testing', script: 'mvn clean install'
+    }
+
+    stage('Jfrog Artifacory')
+    {
+    script{
+        def server= Artifactory.server 'jenkins_artifactory_server'
+                    def uploadSpec= """{
+                        "files": [{
+                        "pattern": "target/*.war",
+                        "target": "varnita_pipeline"}]
+                    }"""
+        server.upload(uploadSpec)
+        }
+    }
+   stage('email notification'){
+        
+        
+mail bcc: '', body: 'cool, enjoy man.', from: '', replyTo: '', subject: 'project successfully finished.', to: 'Varnita.Sur@mindtree.com'     
+
+ 
+
+        
+}
+}
+}

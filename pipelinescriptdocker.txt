@@ -1,0 +1,265 @@
+pipeline{
+    environment {
+    registry = "varnitasur/game"
+    registryCredential = 'dockervar'
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/varnitasur/Game-git.git'
+      }
+    }
+         stage('Clean Old Packages') {
+             steps{
+                    dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+{
+        sh label: 'Clean', script: 'mvn clean'
+    }
+             }
+         }
+        stage('Maven Compile') {
+        steps{
+            dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+{
+        sh label: 'Compile', script: 'mvn compile'
+    }
+        }
+        }
+        stage('Sonar Analysis'){
+        steps{
+            dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+{
+        withSonarQubeEnv('sonarqube'){
+         sh 'mvn sonar:sonar'
+            }
+}
+        }
+        }
+    stage('Maven Package') {
+    steps{
+                  dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+{
+    sh label: 'Testing', script: 'mvn clean install'
+    }
+    }
+    }
+    stage('Jfrog Artifacory')
+    {
+        steps{
+    script{
+        def server= Artifactory.server 'jenkins_artifactory_server'
+                    def uploadSpec= """{
+                        "files": [{
+                        "pattern": "target/*.war",
+                        "target": "Target_snapshots_repository"}]
+                    }"""
+        server.upload(uploadSpec)
+        }
+    }
+    }
+    
+    stage('Jfrog Artifactory download'){
+    
+     steps{
+     script{
+    def server= Artifactory.server 'jenkins_artifactory_server'
+    def downloadSpec = """{
+    "files": [
+    {
+      "pattern": "Target_snapshots_repository/GamesApplication-0.0.1-SNAPSHOT.war",
+      "target": "/var/lib/jenkins/workspace/artifactorydownload/"
+    }
+    ]
+    }"""
+    server.download(downloadSpec)
+  
+}
+        
+     }
+
+    }
+    stage('create image') {
+      steps{
+          dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+          {
+        script {
+          docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+      }
+    }
+    stage('Building image') {
+      steps{
+          dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+          {
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+      }
+    }
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
+    stage('pull image from dockerhub'){
+    steps{
+        script{
+             sh "docker pull $registry:$BUILD_NUMBER"
+       
+    }
+    }
+  }
+  stage('deployee the image in the tomcat server'){
+      steps{
+          script{
+              sh"docker run -d -it -p 8083:8080 --name game-cont -v /var/lib/tomcat8/conf/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml $registry:$BUILD_NUMBER"
+             
+          }
+      }
+  }
+  }
+}pipeline{
+    environment {
+    registry = "varnitasur/game"
+    registryCredential = 'dockervar'
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/varnitasur/Game-git.git'
+???????      }
+    }
+         stage('Clean Old Packages') {
+             steps{
+                    dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+{
+        sh label: 'Clean', script: 'mvn clean'
+    }
+             }
+         }
+        stage('Maven Compile') {
+        steps{
+            dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+{
+        sh label: 'Compile', script: 'mvn compile'
+    }
+        }
+        }
+        stage('Sonar Analysis'){
+        steps{
+            dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+{
+        withSonarQubeEnv('sonarqube'){
+         sh 'mvn sonar:sonar'
+            }
+}
+        }
+        }
+    stage('Maven Package') {
+    steps{
+                  dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+{
+    sh label: 'Testing', script: 'mvn clean install'
+    }
+    }
+    }
+    stage('Jfrog Artifacory')
+    {
+        steps{
+    script{
+        def server= Artifactory.server 'jenkins_artifactory_server'
+                    def uploadSpec= """{
+                        "files": [{
+                        "pattern": "target/*.war",
+                        "target": "Target_snapshots_repository"}]
+                    }"""
+        server.upload(uploadSpec)
+        }
+    }
+    }
+    
+    stage('Jfrog Artifactory download'){
+    
+     steps{
+     script{
+    def server= Artifactory.server 'jenkins_artifactory_server'
+    def downloadSpec = """{
+    "files": [
+    {
+      "pattern": "Target_snapshots_repository/GamesApplication-0.0.1-SNAPSHOT.war",
+      "target": "/var/lib/jenkins/workspace/artifactorydownload/"
+    }
+    ]
+    }"""
+    server.download(downloadSpec)
+  
+}
+        
+     }
+
+    }
+    stage('create image') {
+      steps{
+          dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+          {
+        script {
+          docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+      }
+    }
+    stage('Building image') {
+      steps{
+          dir("/var/lib/jenkins/workspace/docker-game-pipe/GamesApplication")
+          {
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+      }
+    }
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
+    stage('pull image from dockerhub'){
+    steps{
+        script{
+             sh "docker pull $registry:$BUILD_NUMBER"
+       
+    }
+    }
+  }
+  stage('deployee the image in the tomcat server'){
+      steps{
+          script{
+              sh"docker run -d -it -p 8083:8080 --name game-cont -v /var/lib/tomcat8/conf/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml $registry:$BUILD_NUMBER"
+             
+          }
+      }
+  }
+  }
+}

@@ -1,0 +1,120 @@
+pipeline{
+    environment {
+    registry = "varnitasur/atmosphere"
+    registryCredential = 'dockerhub'
+  }
+  agent any
+  stages {
+    stage('Cloning Git') {
+      steps {
+        git 'https://github.com/varnitasur/pipe-git.git'
+      }
+    }
+         stage('Clean Old Packages') {
+             steps{
+                           dir("/var/lib/jenkins/workspace/docker-atmosphere-pipe/atmosphere/spring-boot-samples/spring-boot-sample-atmosphere")
+{
+        sh label: 'Clean', script: 'mvn clean'
+    }
+             }
+         }
+        stage('Maven Compile') {
+        steps{
+                      dir("/var/lib/jenkins/workspace/docker-atmosphere-pipe/atmosphere/spring-boot-samples/spring-boot-sample-atmosphere")
+{
+        sh label: 'Compile', script: 'mvn compile'
+    }
+        }
+        }
+        stage('Sonar Analysis'){
+        steps{
+            dir("/var/lib/jenkins/workspace/docker-atmosphere-pipe/atmosphere/spring-boot-samples/spring-boot-sample-atmosphere")
+{
+        withSonarQubeEnv('sonarqube'){
+         sh 'mvn sonar:sonar'
+            }
+}
+        }
+        }
+        stage("Quality Gate") {
+            steps {
+              timeout(time: 1, unit: 'HOURS') {
+                waitForQualityGate abortPipeline: true
+              }
+            }
+          }
+    stage('Maven Package') {
+    steps{
+                  dir("/var/lib/jenkins/workspace/docker-atmosphere-pipe/atmosphere/spring-boot-samples/spring-boot-sample-atmosphere")
+{
+    sh label: 'Testing', script: 'mvn clean install'
+    }
+    }
+    }
+    stage('Jfrog Artifacory')
+    {
+        steps{
+    script{
+        def server= Artifactory.server 'jenkins_artifactory_server'
+                    def uploadSpec= """{
+                        "files": [{
+                        "pattern": "/var/lib/jenkins/workspace/docker-atmosphere-pipe/atmosphere/spring-boot-samples/spring-boot-sample-atmosphere/target/*.jar",
+                        "target": "pipeline_artifactory"}]
+                    }"""
+        server.upload(uploadSpec)
+        }
+    }
+    }
+    
+    stage('create image') {
+      steps{
+          dir("/var/lib/jenkins/workspace/docker-atmosphere-pipe/atmosphere/spring-boot-samples/spring-boot-sample-atmosphere")
+          {
+        script {
+          docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+      }
+    }
+    stage('Building image') {
+      steps{
+          dir("/var/lib/jenkins/workspace/docker-atmosphere-pipe/atmosphere/spring-boot-samples/spring-boot-sample-atmosphere")
+          {
+        script {
+          dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        }
+      }
+      }
+    }
+    stage('Deploy Image') {
+      steps{
+        script {
+          docker.withRegistry( '', registryCredential ) {
+            dockerImage.push()
+          }
+        }
+      }
+    }
+    stage('Remove Unused docker image') {
+      steps{
+        sh "docker rmi $registry:$BUILD_NUMBER"
+      }
+    }
+    stage('pull image from dockerhub'){
+    steps{
+        script{
+             sh "docker pull $registry:$BUILD_NUMBER"
+       
+    }
+    }
+  }
+  stage('deployee the image in the tomcat server'){
+      steps{
+          script{
+              sh"docker run -d -it -p 8080:8080 --name pipe_cont -v /var/lib/tomcat8/conf/tomcat-users.xml:/usr/local/tomcat/conf/tomcat-users.xml $registry:$BUILD_NUMBER"
+             
+          }
+      }
+  }
+  }
+}

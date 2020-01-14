@@ -1,0 +1,12 @@
+ mkdir varnithacoding
+ 2125  cd varnita/varnithacoding/
+ 2127  git init
+ 2128  git pull https://github.com/chiragvasani36/Pipeline_challenge-.git
+ 2130  git branch varnitha
+ 2131  git checkout varnitha
+ 2132  git checkout
+ 2133  git branch
+ 2134  git push https://github.com/varnitasur/codingchallenge.git varnitha
+ 2135  cd /var/lib/jenkins/workspace/docker-atmosphere-ipe
+
+
