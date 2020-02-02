@@ -29,25 +29,9 @@ CMD ["catalina.sh", "run"]
 mysql -u root -p
 
 
-AKIAVD6PRMNJFTKWU46D
-
-Mr7x3MjV65HnXkh4NjHlYZ7DQDZKTJdUcqDQ0eu+
-
-provider "aws"{
-access_key ="AKIAVD6PRMNJFTKWU46D"
-secret_key ="Mr7x3MjV65HnXkh4NjHlYZ7DQDZKTJdUcqDQ0eu"
-region ="us-east-2"
-}
-resources "aws_instance" "example-aws" {
-ami          =""
-instance_type ="t2.micro"
-}
 
 
-AKIAVD6PRMNJBXUDM76C
-zvtaOfWbzmsFXkOk9iLyDrehGrDxJiZGyjyTMxgf
 
-"ami-0ce933e2ae91880d3"
 
 stage('terraform test') 
     {
@@ -70,14 +54,6 @@ stage('terraform test')
 
 
 
-provider "aws"{
-access_key ="AKIAVD6PRMNJO5HDS6KY"
-secret_key ="Ckrgn1wxihjbO419p30iF7+ewpp+7WVVT+jjaUrR"
-region ="us-east-2"
-}
-resources "aws_instance" "example" {
-ami          ="ami-0d03add87774b12c5"
-instance_type ="t2.micro"
 
 
 
@@ -85,14 +61,6 @@ instance_type ="t2.micro"
 
 
 
-aws" {
-        access_key="AKIATMZQZA2IR4WJP3"
-        secret_key="OBBmvJzqUlrQWzwJYGXswbDJPPz862fAl0kKjM/"
-        region ="ap-south-1"
-}
-resource "aws_instance" "example" {
-        ami ="ami-0ce933e2ae91880d3"
-        instance_type=}
 
 
 
@@ -100,15 +68,8 @@ resource "aws_instance" "example" {
 
 
 
-provider "aws" {
-        access_key= "AKIAVD6PRMNJMRGTL5PY"
-        secret_key="qcWJ8ojRGvou9MXZZkrv23CLLG1HrvZAytBSCwMQ"
-        region="eu-west-3"
-}
-resource "aws_instance" "example"{
-        ami="ami-0d03add87774b12c5"
-        instance_type="t2.micro"
-}
+
+
 
 
 
